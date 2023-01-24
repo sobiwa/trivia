@@ -30,7 +30,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'template',
+      title: 'trivia',
       template: 'src/index.html',
       favicon: 'src/assets/favicon.ico',
     }),

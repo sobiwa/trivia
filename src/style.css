@@ -5,3 +5,157 @@
   font-weight: 600;
   font-style: normal;
 } */
+
+body {
+  background-color: #f5f7fb;
+  font-family: Poppins, sans-serif;
+  position: relative;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#root,
+.app {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.start {
+  color: #293264;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.start--title {
+  font-size: 3rem;
+  padding: 0;
+  margin: 0;
+  font-weight: 700;
+}
+
+.start--text {
+  font-size: 1rem;
+  margin: 0 0 20px;
+}
+
+.start button {
+  cursor: pointer;
+  background-color: #4d5b9e;
+  appearance: none;
+  border: none;
+  color: #f5f7fb;
+  font-family: inherit;
+  font-size: 1rem;
+  height: 50px;
+  width: 150px;
+  border-radius: 15px;
+}
+
+.start button:hover {
+  background-color: hsl(230, 34%, 56%);
+}
+
+@keyframes blobbing {
+  0% {
+    rotate: 0deg;
+    border-radius: 50% 30%;
+  }
+
+  20% {
+    border-radius: 30% 50%;
+  }
+
+  40% {
+    border-radius: 50% 20%;
+  }
+
+  60% {
+    border-radius: 20% 50%;
+  }
+
+  80% {
+    border-radius: 50% 20%;
+  }
+
+  100% {
+    rotate: 360deg;
+    border-radius: 30% 50%;
+  }
+}
+
+/* .blob-container {
+  z-index: -1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+} */
+
+.blob {
+  z-index: -1;
+  animation-name: blobbing;
+  animation-iteration-count: infinite;
+  animation-duration: 60s;
+  animation-timing-function: linear;
+  animation-direction: alternate;
+  height: 300px;
+  width: 300px;
+  position: fixed;
+}
+
+.questions {
+  padding: 30px 10px;
+  max-width: 500px;
+}
+
+.questions p {
+  margin: 0;
+  font-weight: 500;
+  color: #293264;
+  font-size: 1.1rem;
+}
+
+.q {
+  padding: 15px 0;
+  border-bottom: 1px solid #DBDEF0;
+}
+
+.answers {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+}
+
+.answer-button {
+  border: none;
+  box-sizing: border-box;
+  padding: 0px 8px;
+  cursor: pointer;
+  color: #293264;
+  background-color: #f5f7fb00;
+  appearance: none;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 0.9rem;
+  height: 30px;
+  min-width: 80px;
+  border-radius: 12px;
+  border: 1px solid #4d5b9e;
+  position: relative;
+}
+
+.answer-button.selected {
+  background-color: #D6DBF5;
+  border: 1px solid #D6DBF5;
+}
