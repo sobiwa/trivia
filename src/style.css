@@ -24,6 +24,11 @@ body {
   justify-content: center;
 }
 
+.app {
+  box-sizing: border-box;
+  padding: 40px 10px;
+}
+
 .start {
   color: #293264;
   position: absolute;
@@ -60,7 +65,9 @@ body {
   border-radius: 15px;
 }
 
-.start button:hover {
+.start button:hover,
+.play-again-button:hover,
+.check-button:hover {
   background-color: hsl(230, 34%, 56%);
 }
 
@@ -114,7 +121,6 @@ body {
 }
 
 .questions {
-  padding: 30px 10px;
   max-width: 500px;
 }
 
@@ -127,7 +133,19 @@ body {
 
 .q {
   padding: 15px 0;
-  border-bottom: 1px solid #DBDEF0;
+  border-bottom: 1px solid #dbdef0;
+  position: relative;
+}
+
+.q .warning {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  color: red;
+  font-size: 8px;
+  border: 1px solid red;
+  border-radius: 20px;
+  padding: 0 6px;
 }
 
 .answers {
@@ -140,7 +158,7 @@ body {
 .answer-button {
   border: none;
   box-sizing: border-box;
-  padding: 0px 8px;
+  padding: 4px 8px;
   cursor: pointer;
   color: #293264;
   background-color: #f5f7fb00;
@@ -148,14 +166,60 @@ body {
   font-family: inherit;
   font-weight: 400;
   font-size: 0.9rem;
-  height: 30px;
   min-width: 80px;
   border-radius: 12px;
   border: 1px solid #4d5b9e;
   position: relative;
 }
 
-.answer-button.selected {
-  background-color: #D6DBF5;
-  border: 1px solid #D6DBF5;
+/* .answer-button.selected {
+  background-color: #d6dbf5;
+  border: 1px solid #d6dbf5;
+} */
+
+.check-button {
+  cursor: pointer;
+  appearance: none;
+  border: none;
+  width: 150px;
+  height: 40px;
+  color: white;
+  background-color: #4d5b9e;
+  font-family: inherit;
+  border-radius: 10px;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  margin: 20px auto 0 auto;
+  display: block;
+  letter-spacing: 1px;
+}
+
+.play-again-footer {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.footer--score {
+  border: 1px solid #4D5B9E;
+  border-radius: 50%;
+  margin: 0;
+  padding: 6px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #4D5B9E;
+}
+
+.play-again-button {
+  cursor: pointer;
+  letter-spacing: 1px;
+  font-family: inherit;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: #4D5B9E;
 }
