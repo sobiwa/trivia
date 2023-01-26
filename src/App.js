@@ -1,23 +1,70 @@
 /* eslint-disable react/jsx-no-bind */
 import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
+import settingsIcon from './assets/settings.svg';
 import Start from './components/Start';
 import Blob from './components/Blob';
 import initData from './data';
 import Questions from './components/Questions';
 import Footer from './components/Footer';
 import Settings from './components/Settings';
+import Loading from './components/Loading';
 
 export default function App() {
   const [start, setStart] = useState(true);
   const [roundEnd, setRoundEnd] = useState(false);
   const [next, setNext] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [triviaQs, setTriviaQs] = useState(initData.questions);
   const [sessionToken, setSessionToken] = useState('');
   const [dbEmpty, setDbEmpty] = useState(false);
   const [categories, setCategories] = useState(initData);
   const [showSettings, setShowSettings] = useState(false);
+  const [apiCall, setApiCall] = useState(
+    'https://opentdb.com/api.php?amount=10'
+  );
+
+  const [userInput, setUserInput] = useState({
+    number: 5,
+    category: null,
+    difficulty: null,
+    type: null,
+  });
+
+  function fetchToken() {
+    return fetch('https://opentdb.com/api_token.php?command=request');
+  }
+
+  useEffect(() => {
+    async function init() {
+      const tokenCall = await fetch(
+        'https://opentdb.com/api_token.php?command=request'
+      );
+      const token = await tokenCall.json();
+      setSessionToken(token);
+      const apiX = `https://opentdb.com/api.php?amount=${userInput.number}&token=${token.token}`;
+      setApiCall(apiX);
+    }
+    init().finally(() => {
+      setIsLoading(false);
+    });
+  }, []);
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setUserInput((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function editSettings() {
+    const { number, category, difficulty, type } = userInput;
+    const addition1 = category ? `&category=${category}` : '';
+    const addition2 = difficulty ? `&difficulty=${difficulty}` : '';
+    const addition3 = type ? `&type=${type}` : '';
+    setApiCall(
+      `https://opentdb.com/api.php?amount=${number}${addition1}${addition2}${addition3}&token=${sessionToken.token}`
+    );
+  }
 
   function htmlDecode(input) {
     const doc = new DOMParser().parseFromString(input, 'text/html');
@@ -63,28 +110,18 @@ export default function App() {
       }));
   }
 
-  function fetchToken() {
-    return fetch('https://opentdb.com/api_token.php?command=request');
-  }
-
   useEffect(() => {
     fetch('https://opentdb.com/api_category.php')
       .then((res) => res.json())
       .then((data) => setCategories(data));
   }, []);
 
-  console.log(categories);
-
   useEffect(() => {
     const fetchData = async () => {
       if (!sessionToken) {
-        const token1 = await fetchToken();
-        const token = await token1.json();
-        setSessionToken(token);
+        return;
       }
-      const res = await fetch(
-        `https://opentdb.com/api.php?amount=5&category=15&token=${sessionToken.token}`
-      );
+      const res = await fetch(apiCall);
       const data = await res.json();
       switch (data.response_code) {
         case 0:
@@ -97,8 +134,11 @@ export default function App() {
           break;
       }
     };
-    fetchData();
-  }, [next, sessionToken]);
+    fetchData().finally(() => {
+      console.log('here!');
+      setIsLoading(false);
+    });
+  }, [next, apiCall]);
 
   function userSelect(qId, aId) {
     if (roundEnd) return;
@@ -149,6 +189,7 @@ export default function App() {
   }
 
   function playAgain() {
+    setIsLoading(true);
     setNext((prev) => prev + 1);
     setRoundEnd(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -162,22 +203,40 @@ export default function App() {
         <Blob position='top right' color='#fffad1' />
         <Blob position='bottom left' color='#DEEBF8' />
       </div>
-      {!start && (
-        <main>
-          <Questions
-            data={triviaQs}
-            userSelect={userSelect}
-            showResults={roundEnd}
-          />
-          <Footer
-            roundEnd={roundEnd}
-            endRound={endRound}
-            results={triviaQs}
-            playAgain={playAgain}
-          />
-        </main>
+      {!start &&
+        (isLoading ? (
+          <Loading />
+        ) : (
+          <main>
+            <Questions
+              data={triviaQs}
+              userSelect={userSelect}
+              showResults={roundEnd}
+            />
+            <Footer
+              roundEnd={roundEnd}
+              endRound={endRound}
+              results={triviaQs}
+              playAgain={playAgain}
+            />
+            <button
+              className='open-settings-button'
+              type='button'
+              onClick={() => setShowSettings((prev) => !prev)}
+            >
+              <img src={settingsIcon} alt='settings icon' />
+            </button>
+          </main>
+        ))}
+      {showSettings && (
+        <Settings
+          categories={categories.trivia_categories}
+          handleChange={handleChange}
+          userInput={userInput}
+          editSettings={editSettings}
+          toggleDisplay={() => setShowSettings((prev) => !prev)}
+        />
       )}
-      {showSettings && <Settings categories={categories.trivia_categories}/>}
     </div>
   );
 }

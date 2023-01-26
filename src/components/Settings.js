@@ -1,18 +1,12 @@
 import { useState } from 'react';
 
-export default function Settings({ categories }) {
-  const [userInput, setUserInput] = useState({
-    number: 5,
-    category: null,
-    difficulty: null,
-    type: null,
-  });
+export default function Settings({ userInput, handleChange, categories, editSettings, toggleDisplay }) {
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setUserInput((prev) => ({ ...prev, [name]: value }));
+  function handleSubmit(e) {
+    e.preventDefault();
+    editSettings();
+    toggleDisplay();
   }
-  function handleSubmit() {}
   return (
     <div className='settings'>
       <form onSubmit={handleSubmit}>
@@ -45,6 +39,7 @@ export default function Settings({ categories }) {
         </label>
 
         <label htmlFor='input--difficulty'>
+          Select Difficulty:
           <select
             id='input--difficulty'
             value={userInput.difficulty}
@@ -59,6 +54,7 @@ export default function Settings({ categories }) {
         </label>
 
         <label htmlFor='input--type'>
+          Select Type:
           <select
             id='input--type'
             value={userInput.value}
@@ -70,6 +66,7 @@ export default function Settings({ categories }) {
             <option value='boolean'>True / False</option>
           </select>
         </label>
+        <button type='submit' onClick={handleSubmit}>Update Settings</button>
       </form>
     </div>
   );
