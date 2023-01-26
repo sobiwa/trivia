@@ -30,6 +30,9 @@ export default function App() {
     type: undefined,
   });
 
+  //
+
+
   function fetchToken() {
     return fetch('https://opentdb.com/api_token.php?command=request');
   }
