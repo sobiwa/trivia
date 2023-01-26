@@ -17,19 +17,17 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [triviaQs, setTriviaQs] = useState(initData.questions);
-  const [sessionToken, setSessionToken] = useState('');
+  const [sessionToken, setSessionToken] = useState(null);
   const [dbEmpty, setDbEmpty] = useState(false);
   const [categories, setCategories] = useState(initData);
   const [showSettings, setShowSettings] = useState(false);
-  const [apiCall, setApiCall] = useState(
-    'https://opentdb.com/api.php?amount=10'
-  );
+  const [apiCall, setApiCall] = useState(null);
 
   const [userInput, setUserInput] = useState({
     number: 5,
-    category: null,
-    difficulty: null,
-    type: null,
+    category: undefined,
+    difficulty: undefined,
+    type: undefined,
   });
 
   function fetchToken() {
@@ -117,10 +115,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (!sessionToken || apiCall === null) {
+      return;
+    }
     const fetchData = async () => {
-      if (!sessionToken) {
-        return;
-      }
       const res = await fetch(apiCall);
       const data = await res.json();
       switch (data.response_code) {
@@ -135,7 +133,6 @@ export default function App() {
       }
     };
     fetchData().finally(() => {
-      console.log('here!');
       setIsLoading(false);
     });
   }, [next, apiCall]);

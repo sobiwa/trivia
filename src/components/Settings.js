@@ -31,9 +31,9 @@ export default function Settings({ userInput, handleChange, categories, editSett
             onChange={handleChange}
             name='category'
           >
-            <option value='null'>Any Category</option>
+            <option value='undefined'>Any Category</option>
             {categories.map((cat) => (
-              <option value={cat.id}>{cat.name}</option>
+              <option key ={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
         </label>
@@ -46,7 +46,7 @@ export default function Settings({ userInput, handleChange, categories, editSett
             onChange={handleChange}
             name='difficulty'
           >
-            <option value='null'>Any Difficulty</option>
+            <option value='undefined'>Any Difficulty</option>
             <option value='easy'>Easy</option>
             <option value='medium'>Medium</option>
             <option value='hard'>Hard</option>
@@ -61,7 +61,7 @@ export default function Settings({ userInput, handleChange, categories, editSett
             onChange={handleChange}
             name='type'
           >
-            <option value='null'>Any Type</option>
+            <option value='undefined'>Any Type</option>
             <option value='multiple'>Multiple Choice</option>
             <option value='boolean'>True / False</option>
           </select>
