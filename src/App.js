@@ -1,8 +1,10 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-no-bind */
 import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import settingsIcon from './assets/settings.svg';
 import Start from './components/Start';
+import DBempty from './components/DBempty';
 import Blob from './components/Blob';
 import initData from './data';
 import Questions from './components/Questions';
@@ -22,6 +24,8 @@ export default function App() {
   const [categories, setCategories] = useState(initData);
   const [showSettings, setShowSettings] = useState(false);
   const [apiCall, setApiCall] = useState(null);
+  const [tokensRequested, setTokensRequested] = useState(0);
+  const [settingsEditRequired, setSettingsEditRequired] = useState(false);
 
   const [userInput, setUserInput] = useState({
     number: 5,
@@ -30,42 +34,44 @@ export default function App() {
     type: undefined,
   });
 
-  //
+  // retrieve categories from API
+  useEffect(() => {
+    fetch('https://opentdb.com/api_category.php')
+      .then((res) => res.json())
+      .then((data) => setCategories(data));
+  }, []);
 
-
-  function fetchToken() {
-    return fetch('https://opentdb.com/api_token.php?command=request');
+  async function retrieveNewToken() {
+    const call = await fetch(
+      'https://opentdb.com/api_token.php?command=request'
+    );
+    const data = await call.json();
+    setSessionToken(data);
   }
 
   useEffect(() => {
-    async function init() {
-      const tokenCall = await fetch(
-        'https://opentdb.com/api_token.php?command=request'
-      );
-      const token = await tokenCall.json();
-      setSessionToken(token);
-      const apiX = `https://opentdb.com/api.php?amount=${userInput.number}&token=${token.token}`;
-      setApiCall(apiX);
-    }
-    init().finally(() => {
-      setIsLoading(false);
-    });
-  }, []);
+    retrieveNewToken();
+  }, [tokensRequested]);
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setUserInput((prev) => ({ ...prev, [name]: value }));
-  }
-
-  function editSettings() {
+  function updatedApiCall() {
     const { number, category, difficulty, type } = userInput;
+    const { token } = sessionToken;
     const addition1 = category ? `&category=${category}` : '';
     const addition2 = difficulty ? `&difficulty=${difficulty}` : '';
     const addition3 = type ? `&type=${type}` : '';
-    setApiCall(
-      `https://opentdb.com/api.php?amount=${number}${addition1}${addition2}${addition3}&token=${sessionToken.token}`
-    );
+    return `https://opentdb.com/api.php?amount=${number}${addition1}${addition2}${addition3}&token=${token}`;
   }
+
+  function editSettings() {
+    setApiCall(updatedApiCall());
+    setSettingsEditRequired(false);
+    setDbEmpty(false);
+  }
+
+  useEffect(() => {
+    if (!sessionToken) return;
+    editSettings();
+  }, sessionToken);
 
   function htmlDecode(input) {
     const doc = new DOMParser().parseFromString(input, 'text/html');
@@ -112,24 +118,34 @@ export default function App() {
   }
 
   useEffect(() => {
-    fetch('https://opentdb.com/api_category.php')
-      .then((res) => res.json())
-      .then((data) => setCategories(data));
-  }, []);
-
-  useEffect(() => {
     if (!sessionToken || apiCall === null) {
       return;
     }
     const fetchData = async () => {
       const res = await fetch(apiCall);
       const data = await res.json();
+      console.log(data.response_code);
       switch (data.response_code) {
         case 0:
           setTriviaQs(reformatData(data));
           break;
+
+        // Code 1: The API doesn't have enough questions for your query.
+        // tested in browser and this code is not given when a token is provided
         case 1:
           setDbEmpty(true);
+          setSettingsEditRequired(true);
+          break;
+
+        // Token Empty Session Token has returned all possible questions for the specified query. Resetting the Token is necessary.
+        case 4:
+          setDbEmpty(true);
+          break;
+
+        // Token not found
+        case 3:
+          setIsLoading(true);
+          retrieveNewToken();
           break;
         default:
           break;
@@ -139,6 +155,11 @@ export default function App() {
       setIsLoading(false);
     });
   }, [next, apiCall]);
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setUserInput((prev) => ({ ...prev, [name]: value }));
+  }
 
   function userSelect(qId, aId) {
     if (roundEnd) return;
@@ -204,7 +225,13 @@ export default function App() {
         <Blob position='bottom left' color='#DEEBF8' />
       </div>
       {!start &&
-        (isLoading ? (
+        (dbEmpty ? (
+          <DBempty
+            mustEdit={settingsEditRequired}
+            displaySettings={() => setShowSettings(true)}
+            reset={() => setTokensRequested(prev => prev + 1)}
+          />
+        ) : isLoading ? (
           <Loading />
         ) : (
           <main>

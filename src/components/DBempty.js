@@ -1,4 +1,5 @@
-export default function DBempty({reset, changeCategory}) {
+export default function DBempty({reset, mustEdit, displaySettings}) {
+  console.log(mustEdit);
   return (
     <div className='db-empty-screen'>
       <p>
@@ -6,8 +7,8 @@ export default function DBempty({reset, changeCategory}) {
          been asked, or there are not enough to fulfill the number of
         questions requested. Please choose how you would like to proceed...
       </p>
-      <button type='button' onClick={reset}>Reset questions</button>
-      <button type='button' onClick={changeCategory}>Change category</button>
+      {!mustEdit && <button type='button' onClick={reset}>Reset questions</button>}
+      <button type='button' onClick={displaySettings}>Edit settings</button>
     </div>
   );
 }

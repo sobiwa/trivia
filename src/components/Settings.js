@@ -66,7 +66,7 @@ export default function Settings({ userInput, handleChange, categories, editSett
             <option value='boolean'>True / False</option>
           </select>
         </label>
-        <button type='submit' onClick={handleSubmit}>Update Settings</button>
+        <button className='settings--button' type='submit' onClick={handleSubmit}>Update Settings</button>
       </form>
     </div>
   );

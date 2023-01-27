@@ -73,7 +73,9 @@ body {
 
 .start button:hover,
 .play-again-button:hover,
-.check-button:hover {
+.check-button:hover,
+.settings--button:hover,
+.db-empty-screen button:hover {
   background-color: hsl(230, 34%, 56%);
 }
 
@@ -302,7 +304,9 @@ body {
   border: 1px solid #d6dbf5;
 } */
 
-.check-button {
+.check-button,
+.settings--button,
+.db-empty-screen button {
   cursor: pointer;
   appearance: none;
   border: none;
@@ -312,12 +316,16 @@ body {
   background-color: #4d5b9e;
   font-family: inherit;
   border-radius: 10px;
-  margin-top: 20px;
-  margin-left: auto;
-  margin-right: auto;
+  letter-spacing: 1px;
+}
+
+.check-button {
   margin: 20px auto 0 auto;
   display: block;
-  letter-spacing: 1px;
+}
+
+.settings--button {
+  margin: 10px auto 0 auto
 }
 
 .play-again-footer {
@@ -429,4 +437,13 @@ body {
 .settings form input:focus,
 .settings form select:focus {
   outline: 1px solid #4d5b9e;
+}
+
+.db-empty-screen {
+  max-width: 500px;
+  text-align: center;
+}
+
+.db-empty-screen button {
+  margin: 20px;
 }
