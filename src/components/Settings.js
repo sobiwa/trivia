@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 export default function Settings({ userInput, handleChange, categories, editSettings, toggleDisplay }) {
 
   function handleSubmit(e) {
@@ -57,7 +55,7 @@ export default function Settings({ userInput, handleChange, categories, editSett
           Select Type:
           <select
             id='input--type'
-            value={userInput.value}
+            value={userInput.type}
             onChange={handleChange}
             name='type'
           >

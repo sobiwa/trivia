@@ -29,9 +29,9 @@ export default function App() {
 
   const [userInput, setUserInput] = useState({
     number: 5,
-    category: undefined,
-    difficulty: undefined,
-    type: undefined,
+    category: 'undefined',
+    difficulty: 'undefined',
+    type: 'undefined',
   });
 
   // retrieve categories from API
@@ -46,6 +46,7 @@ export default function App() {
       'https://opentdb.com/api_token.php?command=request'
     );
     const data = await call.json();
+    console.log(data);
     setSessionToken(data);
   }
 
@@ -56,16 +57,23 @@ export default function App() {
   function updatedApiCall() {
     const { number, category, difficulty, type } = userInput;
     const { token } = sessionToken;
-    const addition1 = category ? `&category=${category}` : '';
-    const addition2 = difficulty ? `&difficulty=${difficulty}` : '';
-    const addition3 = type ? `&type=${type}` : '';
+    const addition1 = category === 'undefined' ? '' : `&category=${category}`;
+    const addition2 =
+      difficulty === 'undefined' ? '' : `&difficulty=${difficulty}`;
+    const addition3 = type === 'undefined' ? '' : `&type=${type}`;
     return `https://opentdb.com/api.php?amount=${number}${addition1}${addition2}${addition3}&token=${token}`;
   }
 
   function editSettings() {
+    setIsLoading(true);
+    if (dbEmpty) {
+      if (updatedApiCall() === apiCall) {
+        return;
+      }
+      setSettingsEditRequired(false);
+      setDbEmpty(false);
+    }
     setApiCall(updatedApiCall());
-    setSettingsEditRequired(false);
-    setDbEmpty(false);
   }
 
   useEffect(() => {
@@ -124,6 +132,7 @@ export default function App() {
     const fetchData = async () => {
       const res = await fetch(apiCall);
       const data = await res.json();
+      console.log(apiCall);
       console.log(data.response_code);
       switch (data.response_code) {
         case 0:
@@ -229,7 +238,7 @@ export default function App() {
           <DBempty
             mustEdit={settingsEditRequired}
             displaySettings={() => setShowSettings(true)}
-            reset={() => setTokensRequested(prev => prev + 1)}
+            reset={() => setTokensRequested((prev) => prev + 1)}
           />
         ) : isLoading ? (
           <Loading />
