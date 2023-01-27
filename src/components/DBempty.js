@@ -1,5 +1,4 @@
 export default function DBempty({reset, mustEdit, displaySettings}) {
-  console.log(mustEdit);
   return (
     <div className='db-empty-screen'>
       <p>

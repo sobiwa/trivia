@@ -2,6 +2,9 @@ export default function Settings({ userInput, handleChange, categories, editSett
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (!document.getElementById('input--number').validity.valid) {
+      return
+    }
     editSettings();
     toggleDisplay();
   }
@@ -10,15 +13,19 @@ export default function Settings({ userInput, handleChange, categories, editSett
       <form onSubmit={handleSubmit}>
         <label htmlFor='input--number'>
           Number of Questions:
-          <input
-            id='input--number'
-            name='number'
-            onChange={handleChange}
-            value={userInput.number}
-            type='number'
-            min='1'
-            max='50'
-          />
+          <div>
+            <input
+              id='input--number'
+              name='number'
+              onChange={handleChange}
+              value={userInput.number}
+              type='number'
+              min='1'
+              max='50'
+              required
+            />
+            <span className='error--invalid'/>
+          </div>
         </label>
 
         <label htmlFor='input--category'>

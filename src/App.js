@@ -46,7 +46,6 @@ export default function App() {
       'https://opentdb.com/api_token.php?command=request'
     );
     const data = await call.json();
-    console.log(data);
     setSessionToken(data);
   }
 
@@ -65,11 +64,11 @@ export default function App() {
   }
 
   function editSettings() {
+    if (updatedApiCall() === apiCall) {
+      return;
+    }
     setIsLoading(true);
     if (dbEmpty) {
-      if (updatedApiCall() === apiCall) {
-        return;
-      }
       setSettingsEditRequired(false);
       setDbEmpty(false);
     }
@@ -79,7 +78,7 @@ export default function App() {
   useEffect(() => {
     if (!sessionToken) return;
     editSettings();
-  }, sessionToken);
+  }, [sessionToken]);
 
   function htmlDecode(input) {
     const doc = new DOMParser().parseFromString(input, 'text/html');
@@ -132,8 +131,6 @@ export default function App() {
     const fetchData = async () => {
       const res = await fetch(apiCall);
       const data = await res.json();
-      console.log(apiCall);
-      console.log(data.response_code);
       switch (data.response_code) {
         case 0:
           setTriviaQs(reformatData(data));
@@ -228,7 +225,6 @@ export default function App() {
   return (
     <div className='app'>
       {start && <Start begin={() => setStart(false)} />}
-      {/* {dbEmpty && } */}
       <div className='blob-container'>
         <Blob position='top right' color='#fffad1' />
         <Blob position='bottom left' color='#DEEBF8' />

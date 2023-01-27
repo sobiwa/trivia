@@ -248,7 +248,7 @@ body {
 }
 
 .questions {
-  max-width: 500px;
+  max-width: 600px;
 }
 
 .questions p {
@@ -315,8 +315,17 @@ body {
   color: white;
   background-color: #4d5b9e;
   font-family: inherit;
-  border-radius: 10px;
+  border-radius: 20px;
   letter-spacing: 1px;
+  box-shadow: 1px 1px 3px gray;
+}
+
+button {
+  transition: 0.3s;
+}
+
+button:active {
+  scale: 0.95;
 }
 
 .check-button {
@@ -395,8 +404,8 @@ body {
   margin: auto;
   position: fixed;
   background-color: #deebf8;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 30px;
+  border-radius: 20%;
   box-shadow: 1px 1px 6px #293264;
   display: flex;
   align-items: center;
@@ -415,6 +424,38 @@ body {
   flex-direction: column;
 }
 
+.error--invalid {
+  /* display: none; */
+  /* position: absolute; */
+}
+
+label:has(#input--number) {
+  /* position: relative; */
+}
+
+.settings form:has(input:invalid) .error--invalid {
+  /* display: block; */
+}
+
+label .error--invalid {
+  position: relative;
+}
+
+label .error--invalid::after {
+  position: absolute;
+  content: '* number must be between 1 and 50';
+  top: 0;
+  left: 5px;
+  font-size: 10px;
+  width: max-content;
+  color: red;
+  visibility: hidden;
+}
+
+.settings form:has(input:invalid) .error--invalid::after {
+  visibility: visible;
+}
+
 .settings form input,
 .settings form select {
   font-family: inherit;
@@ -423,7 +464,7 @@ body {
   border: none;
   padding: none;
   width: 300px;
-  border-radius: 5px;
+  border-radius: 10px;
   line-height: 1.5rem;
   font-size: 100%;
   text-indent: 5px;
