@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-no-bind */
 import { useState, useEffect } from 'react';
@@ -17,15 +18,18 @@ export default function App() {
   const [roundEnd, setRoundEnd] = useState(false);
   const [next, setNext] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [triviaQs, setTriviaQs] = useState(initData.questions);
-  const [sessionToken, setSessionToken] = useState(null);
   const [dbEmpty, setDbEmpty] = useState(false);
-  const [categories, setCategories] = useState(initData);
   const [showSettings, setShowSettings] = useState(false);
-  const [apiCall, setApiCall] = useState(null);
   const [tokensRequested, setTokensRequested] = useState(0);
   const [settingsEditRequired, setSettingsEditRequired] = useState(false);
+  const [stats, setStats] = useState([
+    { category: 'total', correct: 0, answered: 0 },
+  ]);
+
+  const [apiCall, setApiCall] = useState(null);
+  const [triviaQs, setTriviaQs] = useState(initData.questions);
+  const [sessionToken, setSessionToken] = useState(null);
+  const [categories, setCategories] = useState(initData);
 
   const [userInput, setUserInput] = useState({
     number: 5,
@@ -89,6 +93,7 @@ export default function App() {
     return data.results
       .map((item) => ({
         warning: false,
+        category: item.category,
         question: htmlDecode(item.question),
         answers:
           item.type === 'boolean'
@@ -206,14 +211,61 @@ export default function App() {
     }
   }
 
+  function gatherStats() {
+    const newStats = { total: { correct: 0, asked: 0 } };
+    triviaQs.forEach((q) => {
+      let answerCorrect = false;
+      if (q.answers.some((a) => a.correct && a.selected)) {
+        answerCorrect = true;
+        newStats.total.correct += 1;
+      }
+      newStats[q.category] = {
+        correct: answerCorrect
+          ? newStats[q.category]?.correct + 1 || 1
+          : newStats[q.category]?.correct || 0,
+        asked: newStats[q.category]?.asked + 1 || 1,
+      };
+      newStats.total.asked += 1;
+    });
+    setStats((prev) => {
+      const newArray = [];
+      const untouched = prev.filter(
+        (item) => !Object.prototype.hasOwnProperty.call(newStats, item.category)
+      );
+      const toBeEdited = prev.filter((item) =>
+        Object.prototype.hasOwnProperty.call(newStats, item.category)
+      );
+      for (const [key, value] of Object.entries(newStats)) {
+        const toUpdate = toBeEdited.find((item) => item.category === key);
+        newArray.push(
+          toUpdate
+            ? {
+                ...toUpdate,
+                correct: toUpdate.correct + value.correct,
+                answered: toUpdate.answered + value.asked,
+              }
+            : {
+                category: key,
+                correct: value.correct,
+                answered: value.asked,
+              }
+        );
+      }
+      return [...newArray, ...untouched];
+    });
+  }
+
   function endRound() {
     const needAnswers = checkSelections();
     if (needAnswers.length) {
       sendWarnings(needAnswers);
       return;
     }
+    console.log(triviaQs);
+    gatherStats();
     setRoundEnd(true);
   }
+  console.log(stats);
 
   function playAgain() {
     setIsLoading(true);

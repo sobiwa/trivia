@@ -424,19 +424,6 @@ button:active {
   flex-direction: column;
 }
 
-.error--invalid {
-  /* display: none; */
-  /* position: absolute; */
-}
-
-label:has(#input--number) {
-  /* position: relative; */
-}
-
-.settings form:has(input:invalid) .error--invalid {
-  /* display: block; */
-}
-
 label .error--invalid {
   position: relative;
 }
