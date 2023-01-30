@@ -527,6 +527,7 @@ table, td, th {
 table {
   table-layout: fixed;
   border-collapse: collapse;
+  padding: 10px;
 }
 
 table th:nth-child(2),
