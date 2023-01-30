@@ -1,11 +1,3 @@
-/* @font-face {
-  font-family: 'MyFont';
-  src: url('./my-font.woff2') format('woff2'),
-    url('./my-font.woff') format('woff');
-  font-weight: 600;
-  font-style: normal;
-} */
-
 :root {
   --radius: 30px;
   --dot-size: 13px;
@@ -75,7 +67,9 @@ body {
 .play-again-button:hover,
 .check-button:hover,
 .settings--button:hover,
-.db-empty-screen button:hover {
+.db-empty-screen button:hover,
+.stats--display button:hover,
+.back-button:hover{
   background-color: hsl(230, 34%, 56%);
 }
 
@@ -299,14 +293,11 @@ body {
   position: relative;
 }
 
-/* .answer-button.selected {
-  background-color: #d6dbf5;
-  border: 1px solid #d6dbf5;
-} */
-
 .check-button,
 .settings--button,
-.db-empty-screen button {
+.db-empty-screen button,
+.stats--display button,
+.back-button {
   cursor: pointer;
   appearance: none;
   border: none;
@@ -318,6 +309,21 @@ body {
   border-radius: 20px;
   letter-spacing: 1px;
   box-shadow: 1px 1px 3px gray;
+}
+
+.back-button {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.back-button img {
+  padding: 2px;
+  height: 15px;
+  border: 1px solid white;
+  border-radius: 50%;
 }
 
 button {
@@ -333,8 +339,10 @@ button:active {
   display: block;
 }
 
-.settings--button {
-  margin: 10px auto 0 auto
+.settings--button-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .play-again-footer {
@@ -366,7 +374,8 @@ button:active {
   background: #4d5b9e;
 }
 
-.open-settings-button {
+.open-settings-button,
+.open-stats-button {
   background-color: transparent;
   cursor: pointer;
   padding: 0;
@@ -374,8 +383,6 @@ button:active {
   appearance: none;
   border: none;
   position: absolute;
-  top: 10px;
-  left: 20px;
   width: 1.5rem;
   height: 1.5rem;
   display: flex;
@@ -384,32 +391,60 @@ button:active {
   opacity: 0.5;
 }
 
-.open-settings-button:hover {
+.open-settings-button {
+  top: 10px;
+  left: 20px;
+}
+
+.open-stats-button {
+  bottom: 20px;
+  right: 20px;
+}
+
+@media screen and (max-width: 500px)  {
+  .open-stats-button {
+    left: 20px;
+  }
+}
+
+.open-settings-button:hover,
+.open-stats-button:hover {
   opacity: 1;
 }
 
-.open-settings-button:active {
-  scale: 0.9;
-}
-
-.open-settings-button img {
+.open-settings-button img,
+.open-stats-button img {
   width: 100%;
 }
 
-.settings {
+.settings,
+.stats--alert-box {
   box-sizing: border-box;
-  width: min-content;
-  height: min-content;
   inset: 0;
   margin: auto;
   position: fixed;
   background-color: #deebf8;
   padding: 30px;
   border-radius: 20%;
-  box-shadow: 1px 1px 6px #293264;
-  display: flex;
+  /* box-shadow: 1px 1px 6px #293264; */
   align-items: center;
   justify-content: center;
+}
+
+.settings {
+  display: flex;
+  width: min-content;
+  height: min-content;
+}
+
+.stats--alert-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+  width: 300px;
+  height: 300px;
 }
 
 .settings form {
@@ -475,3 +510,88 @@ label .error--invalid::after {
 .db-empty-screen button {
   margin: 20px;
 }
+
+.stats--data {
+  text-align: center;
+}
+
+table, td, th {
+  /* border-right: 1px solid #4d5b9e; */
+  padding: 8px;
+  color:#293264;
+}
+
+table {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+table th:nth-child(2),
+table th:nth-child(3),
+table th:nth-child(4) {
+  width: 90px;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #4d5b9e94;
+  color: white;
+}
+
+tbody tr:nth-child(odd) td {
+  color: white;
+}
+
+.stats--total-row td {
+  font-size: 1.5rem;
+  background-color: #293264;
+  color: white;
+}
+
+.stats--alert-box-buttons {
+  flex-direction: column;
+  display: flex;
+  gap: 20px;
+}
+
+.stats--alert-box-buttons .reset:hover {
+  background-color: darkred;
+}
+
+.stats--alert-box img {
+  height: 30px;
+  margin-bottom: -20px;
+}
+
+.stats--button-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 30px;
+}
+
+.stats--display .stats--reset-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: darkred;
+  border-radius: 5px;
+}
+
+.stats--display .stats--reset-button:hover {
+  background-color: hsl(0, 100%, 40%)
+
+}
+
+.stats--reset-button img {
+  height: 20px;
+}
+
+.full-screen-fade {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #4d5b9e83;
+  inset: 0;
+}
+

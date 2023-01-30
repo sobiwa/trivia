@@ -4,7 +4,9 @@
 import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import settingsIcon from './assets/settings.svg';
+import statsIcon from './assets/stats.svg';
 import Start from './components/Start';
+import Stats from './components/Stats';
 import DBempty from './components/DBempty';
 import Blob from './components/Blob';
 import initData from './data';
@@ -20,11 +22,14 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [dbEmpty, setDbEmpty] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showStats, setShowStats] = useState(false);
   const [tokensRequested, setTokensRequested] = useState(0);
   const [settingsEditRequired, setSettingsEditRequired] = useState(false);
-  const [stats, setStats] = useState([
-    { category: 'total', correct: 0, answered: 0 },
-  ]);
+  const [stats, setStats] = useState(
+    JSON.parse(localStorage.getItem('stats')) || [
+      { category: 'total', correct: 0, answered: 0 },
+    ]
+  );
 
   const [apiCall, setApiCall] = useState(null);
   const [triviaQs, setTriviaQs] = useState(initData.questions);
@@ -37,6 +42,14 @@ export default function App() {
     difficulty: 'undefined',
     type: 'undefined',
   });
+
+  function hardReset() {
+    setStats([{ category: 'total', correct: 0, answered: 0 }])
+  }
+
+  useEffect(() => {
+    localStorage.setItem('stats', JSON.stringify(stats));
+  }, [stats]);
 
   // retrieve categories from API
   useEffect(() => {
@@ -261,11 +274,9 @@ export default function App() {
       sendWarnings(needAnswers);
       return;
     }
-    console.log(triviaQs);
     gatherStats();
     setRoundEnd(true);
   }
-  console.log(stats);
 
   function playAgain() {
     setIsLoading(true);
@@ -290,6 +301,8 @@ export default function App() {
           />
         ) : isLoading ? (
           <Loading />
+        ) : showStats ? (
+          <Stats stats={stats} reset={hardReset} close={() => setShowStats(false)}/>
         ) : (
           <main>
             <Questions
@@ -309,6 +322,13 @@ export default function App() {
               onClick={() => setShowSettings((prev) => !prev)}
             >
               <img src={settingsIcon} alt='settings icon' />
+            </button>
+            <button
+              className='open-stats-button'
+              type='button'
+              onClick={() => setShowStats((prev) => !prev)}
+            >
+              <img src={statsIcon} alt='stats icon' />
             </button>
           </main>
         ))}

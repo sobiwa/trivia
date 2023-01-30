@@ -18,7 +18,6 @@ export default function Footer({ roundEnd, endRound, results, playAgain }) {
         <p>You scored <span className='footer--score'>{score.correct}/{score.numberQuestions}</span> correct answers</p>
         <button type='button' className='play-again-button' onClick={playAgain}>More questions!</button>
       </div>
-
     )
   }
     return (
