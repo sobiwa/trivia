@@ -32,7 +32,7 @@ function Row({ correct, answered, category, className }) {
     <tr className={className || ''}>
       <td>{category}</td>
       <td className='stats--data'>
-        {Math.round((correct / answered) * 1000) / 10}%
+        {Math.round((correct / answered) * 1000) / 10 || 0}%
       </td>
       <td className='stats--data'>{correct}</td>
       <td className='stats--data'>{answered}</td>

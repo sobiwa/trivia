@@ -298,6 +298,7 @@ body {
 .db-empty-screen button,
 .stats--display button,
 .back-button {
+  font-weight: 400;
   cursor: pointer;
   appearance: none;
   border: none;
@@ -480,6 +481,8 @@ label .error--invalid::after {
 
 .settings form input,
 .settings form select {
+  background-color: white;
+  color:#293264;
   font-family: inherit;
   font-weight: 200;
   appearance: none;
